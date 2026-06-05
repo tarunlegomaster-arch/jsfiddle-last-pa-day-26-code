@@ -1,80 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-/* Walmart Tape Paper Receipt Styling */
-.receipt-scroll {
-  background: #ffffff;
-  color: #1e293b;
-  font-family: 'Courier New', Courier, monospace;
-  padding: 1.5rem;
-  border-radius: 0.25rem;
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-  border-top: 4px dashed #cbd5e1;
-  border-bottom: 4px dashed #cbd5e1;
-  margin-top: 1rem;
-  animation: rollReceipt 0.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-  max-height: 250px;
-  overflow-y: auto;
-}
-
-.receipt-scroll.hidden {
-  display: none;
-}
-
-@keyframes rollReceipt {
-  from { opacity: 0; transform: translateY(-20px); max-height: 0; }
-  to { opacity: 1; transform: translateY(0); max-height: 250px; }
-}
-
-.receipt-header {
-  text-align: center;
-  border-bottom: 1px dashed #64748b;
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-.receipt-header h3 { margin: 0; font-size: 1rem; font-weight: bold; }
-.receipt-header p { margin: 2px 0 0 0; font-size: 0.7rem; color: #64748b; }
-
-.receipt-item-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  margin-bottom: 0.25rem;
-}
-
-.receipt-divider {
-  border-bottom: 1px dashed #64748b;
-  margin: 0.5rem 0;
-}
-
-.receipt-summary-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-.receipt-summary-row.grand-total {
-  font-size: 1rem;
-  margin-top: 0.25rem;
-  border-top: 1px solid #1e293b;
-  padding-top: 0.25rem;
-}
-
-.receipt-footer {
-  text-align: center;
-  font-size: 0.75rem;
-  margin-top: 1rem;
-  color: #475569;
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCT WALMART - Active Store</title>
+    <!-- Confetti Graphics Library Loader -->
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        :root { --bg-floor: #cbd5e1; --counter-grey: #64748b; --shelf-grey: #94a3b8; --terminal-black: #1e293b; --text-light: #f8fafc; --employee-blue: #3b82f6; --customer-green: #10b981; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #0f172a; margin: 0; padding: 1rem; display: flex; justify-content: center; }
+        .tycoon-container { position: relative; width: 100%; max-width: 650px; background: #1e293b; padding: 1rem; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); }
+        .role-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); z-index: 100; border-radius: 1rem; display: flex; justify-content: center; align-items: center; }
+        .role-card { background: white; padding: 2rem; border-radius: 1rem; text-align: center; max-width: 85%; }
+        .role-card h2 { color: #0f172a; margin-top: 0; }
+        .role-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .select-btn { flex: 1; padding: 0.75rem; border: none; border-radius: 0.5rem; color: white; font-weight: 700; cursor: pointer; transition: transform 0.1s; }
+        .select-btn:active { transform: scale(0.95); }
+        .employee-choice { background: var(--employee-blue); }
+        .customer-choice { background: var(--customer-green); }
+        .game-hud { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 0.75rem 1.25rem; border-radius: 0.5rem; margin-bottom: 1rem; }
+        .brand-title { color: #f8fafc; font-weight: 800; font-size: 1.2rem; }
+        .badge { font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 0.25rem; margin-left: 0.5rem; text-transform: uppercase;}
+        .badge.employee { background: var(--employee-blue); color: white; }
+        .badge.customer { background: var(--customer-green); color: #0f172a; }
+        .stats-group { display: flex; gap: 0.75rem; }
+        .stat-pill { background: #1e293b; color: var(--text-light); padding: 0.4rem 0.8rem; border-radius: 0.25rem; font-weight: 600; font-size: 0.9rem; }
+        .store-floorplan { background: var(--bg-floor); border-radius: 0.5rem; padding: 1rem; display: grid; grid-template-rows: auto 1fr auto auto; gap: 1rem; min-height: 420px; }
+        .zone-label { font-size: 0.7rem; font-weight: 800; color: #475569; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+        .warehouse-backroom { background: #e2e8f0; border: 2px dashed #94a3b8; border-radius: 0.35rem; padding: 0.5rem; text-align: center; }
+        .action-btn { background: #475569; color: white; border: none; padding: 0.4rem 1rem; border-radius: 0.25rem; font-weight: 600; cursor: pointer; }
+        .action-btn:hover { background: #334155; }
+        .aisles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+        .aisle-lane { background: #cbd5e1; border: 2px solid #64748b; border-radius: 0.25rem; height: 55px; cursor: pointer; }
+        .aisle-lane:hover { background: #94a3b8; }
+        .shelf-block { background: var(--shelf-grey); color: #0f172a; font-weight: 700; font-size: 0.72rem; text-align: center; padding: 0.2rem; border-bottom: 3px solid #475569; height: 100%; box-sizing: border-box; }
+        .checkout-station { display: flex; justify-content: center; }
+        .tct-counter-desk { background: var(--counter-grey); border-top: 5px solid #e2e8f0; width: 100%; height: 95px; border-radius: 0.25rem; display: flex; justify-content: space-around; align-items: center; position: relative; }
+        .counter-text { font-size: 1.2rem; font-weight: 900; color: rgba(15, 23, 42, 0.15); position: absolute; left: 1rem; }
+        .register-terminal { background: var(--terminal-black); border: 3px solid #475569; width: 90px; height: 55px; border-radius: 0.25rem; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; padding: 0.2rem; box-sizing: border-box; }
+        .terminal-logo { color: #64748b; font-size: 0.55rem; font-weight: bold; text-align: right; }
+        .terminal-status { color: #10b981; font-family: monospace; font-size: 0.7rem; text-align: center; font-weight: bold; }
+        .pin-pad-module { background: #334155; width: 45px; height: 60px; border-radius: 0.15rem; padding: 0.2rem; box-sizing: border-box; border: 2px solid #1e293b; cursor: pointer; }
+        .pin-led { background: #3f6212; color: #bbf7d0; font-size: 0.4rem; font-family: monospace; text-align: center; padding: 1px 0; }
+        .pin-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; text-align: center; color: #f59e0b; font-weight: bold; font-size: 0.5rem; line-height: 0.4; }
+        .customer-queue-lane { display: flex; gap: 0.5rem; justify-content: center; min-height: 35px; }
+        .queue-token { background: #3b82f6; color: white; padding: 0.2rem 0.6rem; border-radius: 1rem; font-weight: 700; font-size: 0.75rem; display: flex; align-items: center; gap: 0.2rem; }
+        .game-log { background: #0f172a; color: #94a3b8; padding: 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-family: monospace; margin-top: 0.75rem; }
+        .receipt-scroll { background: #ffffff; color: #1e293b; font-family: 'Courier New', Courier, monospace; padding: 1.5rem; border-radius: 0.25rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-top: 4px dashed #cbd5e1; border-bottom: 4px dashed #cbd5e1; margin-top: 1rem; max-height: 200px; overflow-y: auto; }
+        .receipt-scroll.hidden { display: none; }
+        .receipt-header { text-align: center; border-bottom: 1px dashed #64748b; padding-bottom: 0.5rem; margin-bottom: 0.75rem; }
+        .receipt-header h3 { margin: 0; font-size: 1rem; }
+        .receipt-header p { margin: 2px 0 0 0; font-size: 0.7rem; color: #64748b; }
+        .receipt-item-row { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.25rem; }
+        .receipt-divider { border-bottom: 1px dashed #64748b; margin: 0.5rem 0; }
+        .receipt-summary-row { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold; }
+        .receipt-summary-row.grand-total { font-size: 1rem; margin-top: 0.25rem; border-top: 1px solid #1e293b; padding-top: 0.25rem; }
+        .receipt-footer { text-align: center; font-size: 0.75rem; margin-top: 1rem; color: #475569; }
+    </style>
 </head>
 <body>
+
     <div class="tycoon-container">
-        <!-- ROLE SELECTION INITIAL OVERLAY -->
         <div id="role-overlay" class="role-overlay">
             <div class="role-card">
                 <h2>Select Your Role</h2>
@@ -86,7 +72,6 @@
             </div>
         </div>
 
-        <!-- MAIN GAME HUD -->
         <header class="game-hud">
             <div class="brand-title">🏪 TCT WALMART <span id="role-badge" class="badge">---</span></div>
             <div class="stats-group">
@@ -97,305 +82,133 @@
 
         <main class="gameplay-arena">
             <div class="store-floorplan">
-                
-                <!-- BACKROOM WAREHOUSE -->
                 <div class="warehouse-backroom">
                     <div class="zone-label">BACKROOM STORAGE SHELVES (1-10)</div>
                     <button id="warehouse-btn" class="action-btn">Order Inventory Pallet</button>
                 </div>
 
-                <!-- MAIN SHOPPING FLOOR: Walmart Departments (12 Aisles) -->
                 <div class="aisles-grid">
-                    <div class="aisle-lane" data-aisle="1"><div class="shelf-block">Aisles 1/2: 🍏 Fresh Produce</div></div>
-                    <div class="aisle-lane" data-aisle="2"><div class="shelf-block">Aisles 3/4: 🍦 Frozen Foods</div></div>
-                    <div class="aisle-lane" data-aisle="3"><div class="shelf-block">Aisles 5/6: 🧼 House & Soap</div></div>
-                    <div class="aisle-lane" data-aisle="4"><div class="shelf-block">Aisles 7/8: 🧸 Toys & Games</div></div>
-                    <div class="aisle-lane" data-aisle="5"><div class="shelf-block">Aisles 9/10: 👕 Clothes & Shoes</div></div>
-                    <div class="aisle-lane" data-aisle="6"><div class="shelf-block">Aisles 11/12: 📺 Electronics</div></div>
+                    <div class="aisle-lane" data-aisle="1"><div class="shelf-block">Aisles 1/2:<br>🍏 Produce</div></div>
+                    <div class="aisle-lane" data-aisle="2"><div class="shelf-block">Aisles 3/4:<br>🍦 Frozen</div></div>
+                    <div class="aisle-lane" data-aisle="3"><div class="shelf-block">Aisles 5/6:<br>🧼 Soap</div></div>
+                    <div class="aisle-lane" data-aisle="4"><div class="shelf-block">Aisles 7/8:<br>🧸 Toys</div></div>
+                    <div class="aisle-lane" data-aisle="5"><div class="shelf-block">Aisles 9/10:<br>👕 Apparel</div></div>
+                    <div class="aisle-lane" data-aisle="6"><div class="shelf-block">Aisles 11/12:<br>📺 Electronics</div></div>
                 </div>
 
-                <!-- FRONT CHECKOUT COUNTER -->
                 <div class="checkout-station">
                     <div class="tct-counter-desk">
                         <div class="counter-text">TCT STORES</div>
-                        
-                        <!-- HP Register screen -->
                         <div class="register-terminal" id="hp-screen">
                             <div class="terminal-logo">hp</div>
                             <div class="terminal-status" id="screen-status">CHOOSE ROLE</div>
                         </div>
-                        
-                        <!-- PIN Pad module -->
                         <div class="pin-pad-module" id="pin-pad">
                             <div class="pin-led" id="pin-led">INSERT CARD</div>
-                            <div class="pin-matrix">
-                                <span>.</span><span>.</span><span>.</span>
-                                <span>.</span><span>.</span><span>.</span>
-                                <span>.</span><span>.</span><span>.</span>
-                            </div>
+                            <div class="pin-matrix"><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span><span>.</span></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TRAFFIC QUEUE AREA -->
                 <div class="customer-queue-lane" id="queue-lane"></div>
-
-                <!-- NEW: WALMART PRINTED RECEIPT COMPONENT -->
-                <div id="receipt-scroll" class="receipt-scroll hidden">
-                    <!-- Injected dynamically via JS when transaction clears -->
-                </div>
+                <div id="receipt-scroll" class="receipt-scroll hidden"></div>
             </div>
         </main>
-
-        <footer class="game-log">
-            <span id="log-text">▶️ Waiting for role selection. Select Employee or Customer to play!</span>
-        </footer>
-    </div>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    let currentRole = ""; 
-    let playerMoney = 100;
-    let storeStock = 50;
-    const maxStock = 50;
-    let progressStage = "shopping"; 
-    let employeeQueue = [];
+    document.addEventListener("DOMContentLoaded", () => {
+        let currentRole = ""; let playerMoney = 100; let storeStock = 50; const maxStock = 50;
+        let progressStage = "shopping"; let employeeQueue = []; let customerBasket = []; let transactionTotal = 0;
 
-    // Walmart Item Tracking States
-    let customerBasket = [];
-    let transactionTotal = 0;
+        const aisleItems = {
+            "1": { name: "Fresh Fruit Basket", price: 5 }, "2": { name: "Ice Cream Tub", price: 8 },
+            "3": { name: "Laundry Detergent", price: 12 }, "4": { name: "Lego Tycoon Brick Set", price: 25 },
+            "5": { name: "Comfy Walmart Hoodie", price: 30 }, "6": { name: "Smart Flat Screen TV", price: 75 }
+        };
 
-    // Walmart Aisle Item Database Mappings
-    const aisleItems = {
-        "1": { name: "Fresh Apples & Bananas", price: 5 },
-        "2": { name: "Premium Cookies & Ice Cream", price: 8 },
-        "3": { name: "Laundry Detergent & Soap", price: 12 },
-        "4": { name: "Lego Tycoon Building Set", price: 25 },
-        "5": { name: "Comfy Long-Weekend Hoodie", price: 30 },
-        "6": { name: "Flat Screen Smart TV", price: 75 }
-    };
+        const roleOverlay = document.getElementById('role-overlay'); const roleBadge = document.getElementById('role-badge');
+        const cashVal = document.getElementById('cash-val'); const stockVal = document.getElementById('stock-val');
+        const screenStatus = document.getElementById('screen-status'); const pinLed = document.getElementById('pin-led');
+        const queueLane = document.getElementById('queue-lane'); const logText = document.getElementById('log-text');
+        const warehouseBtn = document.getElementById('warehouse-btn'); const receiptScroll = document.getElementById('receipt-scroll');
+        const employeeBtn = document.getElementById('btn-choose-employee'); const customerBtn = document.getElementById('btn-choose-customer');
+        const hpScreen = document.getElementById('hp-screen'); const pinPad = document.getElementById('pin-pad');
+        const aisleElements = document.querySelectorAll('.aisle-lane');
 
-    const roleOverlay = document.getElementById('role-overlay');
-    const roleBadge = document.getElementById('role-badge');
-    const cashVal = document.getElementById('cash-val');
-    const stockVal = document.getElementById('stock-val');
-    const screenStatus = document.getElementById('screen-status');
-    const pinLed = document.getElementById('pin-led');
-    const queueLane = document.getElementById('queue-lane');
-    const logText = document.getElementById('log-text');
-    const warehouseBtn = document.getElementById('warehouse-btn');
-    const receiptScroll = document.getElementById('receipt-scroll');
-    
-    const employeeBtn = document.getElementById('btn-choose-employee');
-    const customerBtn = document.getElementById('btn-choose-customer');
-    const hpScreen = document.getElementById('hp-screen');
-    const pinPad = document.getElementById('pin-pad');
-    const aisleElements = document.querySelectorAll('.aisle-lane');
-
-    employeeBtn.addEventListener('click', () => chooseRole('employee'));
-    customerBtn.addEventListener('click', () => chooseRole('customer'));
-    warehouseBtn.addEventListener('click', triggerRestock);
-    hpScreen.addEventListener('click', interactRegister);
-    pinPad.addEventListener('click', interactPinPad);
-    
-    aisleElements.forEach(aisle => {
-        aisle.addEventListener('click', () => {
-            const aisleNum = aisle.getAttribute('data-aisle');
-            interactAisle(aisleNum);
+        if (employeeBtn) employeeBtn.addEventListener('click', () => chooseRole('employee'));
+        if (customerBtn) customerBtn.addEventListener('click', () => chooseRole('customer'));
+        if (warehouseBtn) warehouseBtn.addEventListener('click', triggerRestock);
+        if (hpScreen) hpScreen.addEventListener('click', interactRegister);
+        if (pinPad) pinPad.addEventListener('click', interactPinPad);
+        aisleElements.forEach(aisle => {
+            aisle.addEventListener('click', () => interactAisle(aisle.getAttribute('data-aisle')));
         });
-    });
 
-    function chooseRole(role) {
-        currentRole = role;
-        roleOverlay.style.display = "none";
-        roleBadge.textContent = role;
-        roleBadge.className = `badge ${role}`;
-        receiptScroll.classList.add('hidden');
-
-        if (role === 'employee') {
-            playerMoney = 0; 
-            warehouseBtn.textContent = "📦 Restock Backroom Shelves (-$20)";
-            screenStatus.textContent = "WAITING";
-            logText.textContent = "▶️ Signed in as an Employee. Keep front aisles supplied by unloading backroom storage shelves!";
-            setInterval(spawnCustomerForEmployee, 4000);
-        } else {
-            playerMoney = 150; 
-            warehouseBtn.textContent = "🔒 Backroom Shelves Locked";
-            screenStatus.textContent = "CLOSED";
-            logText.textContent = "▶️ Customer shopping session active. Browse the 12 Walmart aisles to find items!";
-            updateCustomerView();
-        }
-        updateUI();
-    }
-
-    function interactAisle(aisleNumber) {
-        if (!currentRole) return;
-
-        if (currentRole === 'customer') {
-            if (progressStage !== 'shopping') {
-                logText.textContent = "▶️ Basket finalized. Proceed to the front desktop register.";
-                return;
-            }
-            if (storeStock <= 0) {
-                logText.textContent = "▶️ Floor Aisle empty! Wait for an employee to bring items from backroom storage shelves.";
-                return;
-            }
-            
-            // Hide previous receipt if they start shopping again
-            receiptScroll.classList.add('hidden');
-
-            const itemSelected = aisleItems[aisleNumber];
-            customerBasket.push(itemSelected);
-            transactionTotal += itemSelected.price;
-            storeStock--;
-            
-            logText.textContent = `▶️ Added [${itemSelected.name}] ($${itemSelected.price}) to cart. Total Items: ${customerBasket.length}.`;
-            screenStatus.textContent = "TAP TO GO";
-            updateUI();
-        } else {
-            const itemSelected = aisleItems[aisleNumber];
-            logText.textContent = `▶️ Employee Stock Audit: Section selling [${itemSelected.name}] checked. Stock: ${storeStock}/${maxStock}.`;
-        }
-    }
-
-    function interactRegister() {
-        if (currentRole === 'employee') {
-            if (employeeQueue.length === 0) {
-                logText.textContent = "▶️ Front counter register clear. No customers waiting.";
-                return;
-            }
-            
-            const shopper = employeeQueue.shift();
-            playerMoney += 25; 
-            logText.textContent = `▶️ Scanned custom grocery items on HP terminal for ${shopper}. Wages payout: +$25 cash profit.`;
-            window.confetti({ particleCount: 30, spread: 40, origin: { y: 0.8 } });
-            
-            renderEmployeeQueue();
-            if (employeeQueue.length > 0) {
-                screenStatus.textContent = "SCAN NEXT";
+        function chooseRole(role) {
+            currentRole = role; if (roleOverlay) roleOverlay.style.display = "none";
+            if (roleBadge) { roleBadge.textContent = role; roleBadge.className = `badge ${role}`; }
+            if (role === 'employee') {
+                playerMoney = 0; if (warehouseBtn) warehouseBtn.textContent = "📦 Restock Shelves (-$20)";
+                if (screenStatus) screenStatus.textContent = "WAITING";
+                setInterval(spawnCustomer, 4000);
             } else {
-                screenStatus.textContent = "READY";
+                playerMoney = 150; if (warehouseBtn) warehouseBtn.textContent = "🔒 Backroom Locked";
+                if (screenStatus) screenStatus.textContent = "CLOSED"; updateCustomerView();
             }
             updateUI();
-        } else {
-            if (progressStage === 'shopping') {
-                if (customerBasket.length === 0) {
-                    logText.textContent = "▶️ Your shopping basket is empty! Fill up in the floor aisles first.";
-                    return;
-                }
-                progressStage = "paying";
-                screenStatus.textContent = "TOTAL: $" + transactionTotal;
-                pinLed.textContent = "INSERT CARD";
-                logText.textContent = `▶️ Checkout complete! Your Walmart total is $${transactionTotal}. Tap the orange PIN Pad card reader to pay!`;
+        }
+
+        function interactAisle(num) {
+            if (!currentRole) return;
+            if (currentRole === 'customer') {
+                if (progressStage !== 'shopping' || storeStock <= 0) return;
+                const item = aisleItems[num]; customerBasket.push(item); transactionTotal += item.price; storeStock--;
+                if (logText) logText.textContent = `▶️ Added [${item.name}] ($${item.price}) to cart. Total: ${customerBasket.length} items.`;
+                if (screenStatus) screenStatus.textContent = "TAP REGISTER";
+                updateUI();
+            } else {
+                if (logText) logText.textContent = `▶️ Employee Stock Audit: Aisle ${num} has active stock. Global: ${storeStock}/${maxStock}.`;
             }
         }
-    }
 
-    function interactPinPad() {
-        if (currentRole !== 'customer') {
-            logText.textContent = "▶️ Error: PIN Pad terminal restricted to shopping customers only.";
-            return;
-        }
-        
-        if (progressStage === 'paying') {
-            const taxAmount = parseFloat((transactionTotal * 0.13).toFixed(2));
-            const finalGrandTotal = parseFloat((transactionTotal + taxAmount).toFixed(2));
-
-            if (playerMoney < finalGrandTotal) {
-                logText.textContent = `▶️ Transaction Declined! Your total with tax ($${finalGrandTotal}) exceeds your wallet balance.`;
-                return;
+        function interactRegister() {
+            if (currentRole === 'employee') {
+                if (employeeQueue.length === 0) return;
+                employeeQueue.shift(); playerMoney += 25; renderQueue();
+                if (screenStatus) screenStatus.textContent = employeeQueue.length > 0 ? "SCAN NEXT" : "READY";
+                if (window.confetti) window.confetti({ particleCount: 30, spread: 40, origin: { y: 0.8 } });
+                updateUI();
+            } else if (progressStage === 'shopping' && customerBasket.length > 0) {
+                progressStage = "paying"; if (screenStatus) screenStatus.textContent = "TOTAL: $" + transactionTotal;
+                if (pinLed) pinLed.textContent = "INSERT CARD";
+                if (logText) logText.textContent = `▶️ Scanned. Total with 13% HST is $${(transactionTotal * 1.13).toFixed(2)}. Tap the PIN pad!`;
             }
-            
-            playerMoney -= finalGrandTotal;
-            pinLed.textContent = "APPROVED";
-            screenStatus.textContent = "PAID";
-            logText.textContent = `▶️ Payment processed! Your receipt tape has been printed below.`;
-            progressStage = "done";
-            
-            // Build and render the tape scroll markup parameters
-            printWalmartReceipt(taxAmount, finalGrandTotal);
-
-            window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            
-            // Reset for next trip
-            customerBasket = [];
-            transactionTotal = 0;
-            progressStage = "shopping"; 
-            updateUI();
         }
-    }
 
-    function printWalmartReceipt(tax, grandTotal) {
-        let itemsHtml = "";
-        customerBasket.forEach(item => {
-            itemsHtml += `
-                <div class="receipt-item-row">
-                    <span>${item.name}</span>
-                    <span>$${item.price.toFixed(2)}</span>
-                </div>
-            `;
-        });
+        function interactPinPad() {
+            if (currentRole === 'customer' && progressStage === 'paying') {
+                const tax = parseFloat((transactionTotal * 0.13).toFixed(2));
+                const total = parseFloat((transactionTotal + tax).toFixed(2));
+                if (playerMoney < total) return;
+                playerMoney -= total; if (pinLed) pinLed.textContent = "APPROVED"; if (screenStatus) screenStatus.textContent = "PAID";
+                printReceipt(tax, total); if (window.confetti) window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                customerBasket = []; transactionTotal = 0; progressStage = "shopping"; updateUI();
+            }
+        }
 
-        const currentDateTime = new Date().toLocaleString("en-US");
+        function printReceipt(tax, total) {
+            if (!receiptScroll) return; let html = ""; customerBasket.forEach(i => { html += `<div class="receipt-item-row"><span>${i.name}</span><span>$${i.price.toFixed(2)}</span></div>`; });
+            receiptScroll.innerHTML = `<div class="receipt-header"><h3>TCT WALMART</h3><p>Durham Region Hub</p><p>${new Date().toLocaleString()}</p></div><div>${html}</div><div class="receipt-divider"></div><div class="receipt-summary-row"><span>SUBTOTAL</span><span>$${transactionTotal.toFixed(2)}</span></div><div class="receipt-summary-row"><span>ONTARIO HST (13%)</span><span>$${tax.toFixed(2)}</span></div><div class="receipt-summary-row grand-total"><span>TOTAL</span><span>$${total.toFixed(2)}</span></div><div class="receipt-divider"></div><div class="receipt-footer"><p>❤️ Happy Long Weekend! ❤️</p></div>`;
+            receiptScroll.classList.remove('hidden');
+        }
 
-        receiptScroll.innerHTML = `
-            <div class="receipt-header">
-                <h3>TCT WALMART SUPERCENTER</h3>
-                <p>Store #4510 - Long Weekend Hub</p>
-                <p>${currentDateTime}</p>
-            </div>
-            <div class="receipt-items-box">
-                ${itemsHtml}
-            </div>
-            <div class="receipt-divider"></div>
-            <div class="receipt-summary-row">
-                <span>SUBTOTAL</span>
-                <span>$${transactionTotal.toFixed(2)}</span>
-            </div>
-            <div class="receipt-summary-row">
-                <span>HST TAX (13%)</span>
-                <span>$${tax.toFixed(2)}</span>
-            </div>
-            <div class="receipt-summary-row grand-total">
-                <span>GRAND TOTAL</span>
-                <span>$${grandTotal.toFixed(2)}</span>
-            </div>
-            <div class="receipt-divider"></div>
-            <div class="receipt-footer">
-                <p>ITEMS PURCHASED: ${customerBasket.length}</p>
-                <p>THANK YOU FOR SHOPPING AT TCT!</p>
-                <p>❤️ Happy Long Weekend Mom & Dad! ❤️</p>
-            </div>
-        `;
-        receiptScroll.classList.remove('hidden');
-    }
-
-    function spawnCustomerForEmployee() {
-        if (employeeQueue.length >= 4) return;
-        const targets = ["Mom 🛒", "Dad 🚙", "Shopper 📦"];
-        const guest = targets[Math.floor(Math.random() * targets.length)];
-        employeeQueue.push(guest);
-        renderEmployeeQueue();
-        
-        screenStatus.textContent = "SCAN ITEM";
-        screenStatus.style.color = "#f59e0b";
-    }
-
-    function renderEmployeeQueue() {
-        queueLane.innerHTML = "";
-        employeeQueue.forEach((customer, index) => {
-            const element = document.createElement('div');
-            element.className = 'queue-token';
-            if (index === 0) element.style.background = "#10b981";
-            element.innerHTML = `<span>👤</span> ${customer}`;
-            queueLane.appendChild(element);
-        });
-    }
-
-    function triggerRestock() {
-        if (currentRole !== 'employee') return;
-        
-        if (playerMoney < 20) {
-Use code with caution.logText.textContent = "▶️ Order failed! You need $20 in register wages to unlock new supply boxes.";return;}playerMoney -= 20;storeStock = maxStock;logText.textContent = "▶️ Backroom storage shelves reloaded. Front aisles supplied.";updateUI();}function updateCustomerView() {queueLane.innerHTML = <div class="queue-token" style="background:#6366f1">🎒 Items in Cart: <strong id="basket-count" style="margin-left:5px">0</strong></div>;}function updateUI() {cashVal.textContent = $${playerMoney.toFixed(2)};stockVal.textContent = ${storeStock}/${maxStock};if (currentRole === 'customer') {const basketCount = document.getElementById('basket-count');if (basketCount) basketCount.textContent = customerBasket.length;}}updateUI();});
-</script>
+        function spawnCustomer() { if (employeeQueue.length >= 4) return; employeeQueue.push(["Mom 🛒", "Dad 🚙", "Shopper 📦"][Math.floor(Math.random() * 3)]); renderQueue(); if (screenStatus) screenStatus.textContent = "SCAN ITEM"; }
+        function renderQueue() { if (!queueLane) return; queueLane.innerHTML = ""; employeeQueue.forEach((c, i) => { const el = document.createElement('div'); el.className = 'queue-token'; if (i === 0) el.style.background = "#10b981"; el.innerHTML = `<span>👤</span> ${c}`; queueLane.appendChild(el); }); }
+        function triggerRestock() { if (currentRole === 'employee' && playerMoney >= 20) { playerMoney -= 20; storeStock = maxStock; updateUI(); } }
+        function updateCustomerView() { if (queueLane) queueLane.innerHTML = `<div class="queue-token" style="background:#6366f1">🎒 Cart: <strong id="basket-count" style="margin-left:5px">0</strong></div>`; }
+        function updateUI() { if (cashVal) cashVal.textContent = `$${playerMoney.toFixed(2)}`; if (stockVal) stockVal.textContent = `${storeStock}/${maxStock}`; const b = document.getElementById('basket-count'); if (b) b.textContent = customerBasket.length; }
+        updateUI();
+    });
+    </script>
 </body>
 </html>
+🚀 Run the Git Save ActionIf there
