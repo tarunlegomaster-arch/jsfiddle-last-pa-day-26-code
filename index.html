@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last PA Day Presentation</title>
+    <style>
+        /* Modern CSS Reset & Variables */
+        :root {
+            --primary: #ff4757;
+            --primary-hover: #ff6b81;
+            --bg-gradient: linear-gradient(135deg, #74ebd5 0%, #9fa8da 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #2f3542;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Navigations */
+        nav {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 12px 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: transparent;
+            padding: 20px 0;
+        }
+
+        .nav-brand {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Main Container */
+        .cover {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 0 20px 40px 20px;
+        }
+
+        header h1 {
+            color: #fff;
+            text-align: center;
+            font-size: 2.5rem;
+            margin: 20px 0 40px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+        }
+
+        /* Content Sections */
+        section, .game-box {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+
+        h2, h4 {
+            margin-top: 0;
+            color: #2f3542;
+        }
+
+        /* Countdown Area */
+        .countdown-container {
+            background: #f1f2f6;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .timer-digits {
+            color: var(--primary);
+            font-size: 1.2rem;
+            background: #fff;
+            padding: 4px 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Interactive Input Elements */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e4e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #74ebd5;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        #add-btn {
+            background: var(--primary);
+            color: #fff;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-size: 1.5rem;
+        }
+
+        #add-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .gift-btn {
+            background: #fff;
+            color: var(--primary);
+            padding: 10px 18px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 0.95rem;
+        }
+
+        .gift-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Recommendation Badges */
+        .quick-suggest {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .suggest-badge {
+            background: #e8f0fe;
+            color: #1a73e8;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .suggest-badge:hover {
+            background: #d2e3fc;
+        }
+
+        /* Dynamic Activity List Elements */
+        .activities-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0 0 0;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .activity-item.removing {
+            animation: fadeOut 0.3s ease forwards;
+        }
+
+        .activity-text {
+            flex: 1;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .completed .activity-text {
+            text-decoration: line-through;
+            color: #a4b0be;
+        }
+
+        .remove-btn {
+            background: transparent;
+            color: #ced6e0;
+            font-size: 1.4rem;
+            padding: 0 5px;
+        }
+
+        .remove-btn:hover {
+            color: var(--primary);
+        }
+
+        .empty-hint {
+            color: #747d8c;
+            font-style: italic;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        /* Surprise Modal Backdrop & Card */
+        .surprise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 0.3s ease;
+        }
+
+        .surprise-card {
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .surprise-card h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        .close-btn {
+            background: var(--primary);
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
+        .close-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .hidden {
+            display: none !important;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .game-box a {
+            color: #1a73e8;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .game-box a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+        @keyframes scaleUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="game.html">TCT Stores game</a>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <div class="cover">
+        <nav class="top-nav">
+            <span class="nav-brand">❤️ Weekend Hub</span>
+            <button id="gift-btn" class="gift-btn" onclick="revealSurprise()">
+                🎁 Open Surprise
+            </button>
+        </nav>
+
+        <header>
+            <h1>Fun stuff to do this weekend</h1>
+        </header>
+
+        <main>
+            <div id="surprise-overlay" class="surprise-overlay hidden">
+                <div class="surprise-card">
+                    <h2>Surprise, Mom & Dad! 🎉</h2>
+                    <p>
+                        Happy Long Weekend! Everything this weekend is completely taken care of. Get ready to relax!
+                    </p>
+                    <button class="close-btn" onclick="closeSurprise()">Awesome!</button>
+                </div>
+            </div>
+
+            <section>
+                <div class="countdown-container">
+                    <span class="countdown-label">🕒 End of school Countdown:</span>
+                    <span id="timer" class="timer-digits">Loading...</span>
+                </div>
+
+                <h2>My Work & Play</h2>
+                
+                <ul class="activities-list" id="activities-list">
+                    </ul>
+
+                <p id="status-msg" class="empty-hint"></p>
+
+                <div class="input-group">
+                    <input type="text" id="activity-input" placeholder="Add a fun activity..." onkeypress="handleKeyPress(event)">
+                    <button id="add-btn" onclick="addActivity()">+</button>
+                </div>
+
+                <div class="quick-suggest">
+                    <span class="suggest-badge" onclick="addSuggested('🍳 Brunch')">+ Brunch</span>
+                    <span class="suggest-badge" onclick="addSuggested('🎬 Movie')">+ Movie</span>
+                    <span class="suggest-badge" onclick="addSuggested('🌳 Walk')">+ Walk</span>
+                </div>
+            </section>
+
+            <div class="game-box">
+                <h4>Live Game</h4>
+                <p>Play the fun <a href="game.html" target="_blank">tct-stores-tycoon game</a> (opens in a new tab!)</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const input = document.getElementById('activity-input');
+        const list = document.getElementById('activities-list');
+        const statusMsg = document.getElementById('status-msg');
+        const surpriseOverlay = document.getElementById('surprise-overlay');
+
+        function addActivity() {
+            const text = input.value.trim();
+            if (text === "") {
+                input.focus();
+                return;
+            }
+            const li = document.createElement('li');
+            li.className = 'activity-item';
+            li.innerHTML = `<span class="activity-text" onclick="toggleComplete(this)">${escapeHTML(text)}</span> <button class="remove-btn" onclick="removeActivity(this)">×</button>`;
+            list.appendChild(li);
+            input.value = "";
+            input.focus();
+            updateEmptyState();
+        }
+
+        function removeActivity(button) {
+            const item = button.parentElement;
+            item.classList.add('removing');
+            item.addEventListener('animationend', () => {
+                item.remove();
+                updateEmptyState();
+            }, { once: true });
+        }
+
+        function toggleComplete(textElement) {
+            const item = textElement.parentElement;
+            item.classList.toggle('completed');
+        }
+
+        function addSuggested(activityText) {
+            input.value = activityText;
+            addActivity();
+        }
+
+        function revealSurprise() {
+            surpriseOverlay.classList.remove('hidden');
+            // Canvas-confetti implementation
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function closeSurprise() {
+            surpriseOverlay.classList.add('hidden');
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                addActivity();
+            }
+        }
+
+        function escapeHTML(str) {
+            const p = document.createElement('p');
+            p.textContent = str;
+            return p.innerHTML;
+        }
+
+        function updateEmptyState() {
+            if (list.children.length === 0) {
+                statusMsg.textContent = "Nothing planned yet. Add something!";
+            } else {
+                statusMsg.textContent = "";
+            }
+        }
+
+        // Countdown timer execution
+        function startCountdown() {
+            const targetDate = new Date("June 19, 2026 17:00:00").getTime();
+            setInterval(() => {
+                const now = new Date().getTime();
+                const difference = targetDate - now;
+                if (difference < 0) {
+                    document.getElementById("timer").textContent = "It's Time! 🎉";
+                    return;
+                }
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById("timer").textContent = `${days}d ${hours}h ${minutes}m`;
+            }, 1000);
+        }
+
+        // Initialize layout
+        updateEmptyState();
+        startCountdown();
+    </script>
+</body>
+</html>

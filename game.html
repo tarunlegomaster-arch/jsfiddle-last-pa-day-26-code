@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+/* Walmart Tape Paper Receipt Styling */
+.receipt-scroll {
+  background: #ffffff;
+  color: #1e293b;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 1.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  border-top: 4px dashed #cbd5e1;
+  border-bottom: 4px dashed #cbd5e1;
+  margin-top: 1rem;
+  animation: rollReceipt 0.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.receipt-scroll.hidden {
+  display: none;
+}
+
+@keyframes rollReceipt {
+  from { opacity: 0; transform: translateY(-20px); max-height: 0; }
+  to { opacity: 1; transform: translateY(0); max-height: 250px; }
+}
+
+.receipt-header {
+  text-align: center;
+  border-bottom: 1px dashed #64748b;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.receipt-header h3 { margin: 0; font-size: 1rem; font-weight: bold; }
+.receipt-header p { margin: 2px 0 0 0; font-size: 0.7rem; color: #64748b; }
+
+.receipt-item-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.receipt-divider {
+  border-bottom: 1px dashed #64748b;
+  margin: 0.5rem 0;
+}
+
+.receipt-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.receipt-summary-row.grand-total {
+  font-size: 1rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid #1e293b;
+  padding-top: 0.25rem;
+}
+
+.receipt-footer {
+  text-align: center;
+  font-size: 0.75rem;
+  margin-top: 1rem;
+  color: #475569;
+}
+
+</style>
+</head>
+<body>
+    <div class="tycoon-container">
+        <!-- ROLE SELECTION INITIAL OVERLAY -->
+        <div id="role-overlay" class="role-overlay">
+            <div class="role-card">
+                <h2>Select Your Role</h2>
+                <p>Welcome to TCT Stores! Choose how you want to play:</p>
+                <div class="role-buttons">
+                    <button id="btn-choose-employee" class="select-btn employee-choice">💼 Play as Employee</button>
+                    <button id="btn-choose-customer" class="select-btn customer-choice">🛒 Play as Customer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN GAME HUD -->
+        <header class="game-hud">
+            <div class="brand-title">🏪 TCT WALMART <span id="role-badge" class="badge">---</span></div>
+            <div class="stats-group">
+                <div class="stat-pill">💰 Money: <span id="cash-val">$100</span></div>
+                <div class="stat-pill">📦 Storage Stock: <span id="stock-val">50/50</span></div>
+            </div>
+        </header>
+
+        <main class="gameplay-arena">
+            <div class="store-floorplan">
+                
+                <!-- BACKROOM WAREHOUSE -->
+                <div class="warehouse-backroom">
+                    <div class="zone-label">BACKROOM STORAGE SHELVES (1-10)</div>
+                    <button id="warehouse-btn" class="action-btn">Order Inventory Pallet</button>
+                </div>
+
+                <!-- MAIN SHOPPING FLOOR: Walmart Departments (12 Aisles) -->
+                <div class="aisles-grid">
+                    <div class="aisle-lane" data-aisle="1"><div class="shelf-block">Aisles 1/2: 🍏 Fresh Produce</div></div>
+                    <div class="aisle-lane" data-aisle="2"><div class="shelf-block">Aisles 3/4: 🍦 Frozen Foods</div></div>
+                    <div class="aisle-lane" data-aisle="3"><div class="shelf-block">Aisles 5/6: 🧼 House & Soap</div></div>
+                    <div class="aisle-lane" data-aisle="4"><div class="shelf-block">Aisles 7/8: 🧸 Toys & Games</div></div>
+                    <div class="aisle-lane" data-aisle="5"><div class="shelf-block">Aisles 9/10: 👕 Clothes & Shoes</div></div>
+                    <div class="aisle-lane" data-aisle="6"><div class="shelf-block">Aisles 11/12: 📺 Electronics</div></div>
+                </div>
+
+                <!-- FRONT CHECKOUT COUNTER -->
+                <div class="checkout-station">
+                    <div class="tct-counter-desk">
+                        <div class="counter-text">TCT STORES</div>
+                        
+                        <!-- HP Register screen -->
+                        <div class="register-terminal" id="hp-screen">
+                            <div class="terminal-logo">hp</div>
+                            <div class="terminal-status" id="screen-status">CHOOSE ROLE</div>
+                        </div>
+                        
+                        <!-- PIN Pad module -->
+                        <div class="pin-pad-module" id="pin-pad">
+                            <div class="pin-led" id="pin-led">INSERT CARD</div>
+                            <div class="pin-matrix">
+                                <span>.</span><span>.</span><span>.</span>
+                                <span>.</span><span>.</span><span>.</span>
+                                <span>.</span><span>.</span><span>.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRAFFIC QUEUE AREA -->
+                <div class="customer-queue-lane" id="queue-lane"></div>
+
+                <!-- NEW: WALMART PRINTED RECEIPT COMPONENT -->
+                <div id="receipt-scroll" class="receipt-scroll hidden">
+                    <!-- Injected dynamically via JS when transaction clears -->
+                </div>
+            </div>
+        </main>
+
+        <footer class="game-log">
+            <span id="log-text">▶️ Waiting for role selection. Select Employee or Customer to play!</span>
+        </footer>
+    </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    let currentRole = ""; 
+    let playerMoney = 100;
+    let storeStock = 50;
+    const maxStock = 50;
+    let progressStage = "shopping"; 
+    let employeeQueue = [];
+
+    // Walmart Item Tracking States
+    let customerBasket = [];
+    let transactionTotal = 0;
+
+    // Walmart Aisle Item Database Mappings
+    const aisleItems = {
+        "1": { name: "Fresh Apples & Bananas", price: 5 },
+        "2": { name: "Premium Cookies & Ice Cream", price: 8 },
+        "3": { name: "Laundry Detergent & Soap", price: 12 },
+        "4": { name: "Lego Tycoon Building Set", price: 25 },
+        "5": { name: "Comfy Long-Weekend Hoodie", price: 30 },
+        "6": { name: "Flat Screen Smart TV", price: 75 }
+    };
+
+    const roleOverlay = document.getElementById('role-overlay');
+    const roleBadge = document.getElementById('role-badge');
+    const cashVal = document.getElementById('cash-val');
+    const stockVal = document.getElementById('stock-val');
+    const screenStatus = document.getElementById('screen-status');
+    const pinLed = document.getElementById('pin-led');
+    const queueLane = document.getElementById('queue-lane');
+    const logText = document.getElementById('log-text');
+    const warehouseBtn = document.getElementById('warehouse-btn');
+    const receiptScroll = document.getElementById('receipt-scroll');
+    
+    const employeeBtn = document.getElementById('btn-choose-employee');
+    const customerBtn = document.getElementById('btn-choose-customer');
+    const hpScreen = document.getElementById('hp-screen');
+    const pinPad = document.getElementById('pin-pad');
+    const aisleElements = document.querySelectorAll('.aisle-lane');
+
+    employeeBtn.addEventListener('click', () => chooseRole('employee'));
+    customerBtn.addEventListener('click', () => chooseRole('customer'));
+    warehouseBtn.addEventListener('click', triggerRestock);
+    hpScreen.addEventListener('click', interactRegister);
+    pinPad.addEventListener('click', interactPinPad);
+    
+    aisleElements.forEach(aisle => {
+        aisle.addEventListener('click', () => {
+            const aisleNum = aisle.getAttribute('data-aisle');
+            interactAisle(aisleNum);
+        });
+    });
+
+    function chooseRole(role) {
+        currentRole = role;
+        roleOverlay.style.display = "none";
+        roleBadge.textContent = role;
+        roleBadge.className = `badge ${role}`;
+        receiptScroll.classList.add('hidden');
+
+        if (role === 'employee') {
+            playerMoney = 0; 
+            warehouseBtn.textContent = "📦 Restock Backroom Shelves (-$20)";
+            screenStatus.textContent = "WAITING";
+            logText.textContent = "▶️ Signed in as an Employee. Keep front aisles supplied by unloading backroom storage shelves!";
+            setInterval(spawnCustomerForEmployee, 4000);
+        } else {
+            playerMoney = 150; 
+            warehouseBtn.textContent = "🔒 Backroom Shelves Locked";
+            screenStatus.textContent = "CLOSED";
+            logText.textContent = "▶️ Customer shopping session active. Browse the 12 Walmart aisles to find items!";
+            updateCustomerView();
+        }
+        updateUI();
+    }
+
+    function interactAisle(aisleNumber) {
+        if (!currentRole) return;
+
+        if (currentRole === 'customer') {
+            if (progressStage !== 'shopping') {
+                logText.textContent = "▶️ Basket finalized. Proceed to the front desktop register.";
+                return;
+            }
+            if (storeStock <= 0) {
+                logText.textContent = "▶️ Floor Aisle empty! Wait for an employee to bring items from backroom storage shelves.";
+                return;
+            }
+            
+            // Hide previous receipt if they start shopping again
+            receiptScroll.classList.add('hidden');
+
+            const itemSelected = aisleItems[aisleNumber];
+            customerBasket.push(itemSelected);
+            transactionTotal += itemSelected.price;
+            storeStock--;
+            
+            logText.textContent = `▶️ Added [${itemSelected.name}] ($${itemSelected.price}) to cart. Total Items: ${customerBasket.length}.`;
+            screenStatus.textContent = "TAP TO GO";
+            updateUI();
+        } else {
+            const itemSelected = aisleItems[aisleNumber];
+            logText.textContent = `▶️ Employee Stock Audit: Section selling [${itemSelected.name}] checked. Stock: ${storeStock}/${maxStock}.`;
+        }
+    }
+
+    function interactRegister() {
+        if (currentRole === 'employee') {
+            if (employeeQueue.length === 0) {
+                logText.textContent = "▶️ Front counter register clear. No customers waiting.";
+                return;
+            }
+            
+            const shopper = employeeQueue.shift();
+            playerMoney += 25; 
+            logText.textContent = `▶️ Scanned custom grocery items on HP terminal for ${shopper}. Wages payout: +$25 cash profit.`;
+            window.confetti({ particleCount: 30, spread: 40, origin: { y: 0.8 } });
+            
+            renderEmployeeQueue();
+            if (employeeQueue.length > 0) {
+                screenStatus.textContent = "SCAN NEXT";
+            } else {
+                screenStatus.textContent = "READY";
+            }
+            updateUI();
+        } else {
+            if (progressStage === 'shopping') {
+                if (customerBasket.length === 0) {
+                    logText.textContent = "▶️ Your shopping basket is empty! Fill up in the floor aisles first.";
+                    return;
+                }
+                progressStage = "paying";
+                screenStatus.textContent = "TOTAL: $" + transactionTotal;
+                pinLed.textContent = "INSERT CARD";
+                logText.textContent = `▶️ Checkout complete! Your Walmart total is $${transactionTotal}. Tap the orange PIN Pad card reader to pay!`;
+            }
+        }
+    }
+
+    function interactPinPad() {
+        if (currentRole !== 'customer') {
+            logText.textContent = "▶️ Error: PIN Pad terminal restricted to shopping customers only.";
+            return;
+        }
+        
+        if (progressStage === 'paying') {
+            const taxAmount = parseFloat((transactionTotal * 0.13).toFixed(2));
+            const finalGrandTotal = parseFloat((transactionTotal + taxAmount).toFixed(2));
+
+            if (playerMoney < finalGrandTotal) {
+                logText.textContent = `▶️ Transaction Declined! Your total with tax ($${finalGrandTotal}) exceeds your wallet balance.`;
+                return;
+            }
+            
+            playerMoney -= finalGrandTotal;
+            pinLed.textContent = "APPROVED";
+            screenStatus.textContent = "PAID";
+            logText.textContent = `▶️ Payment processed! Your receipt tape has been printed below.`;
+            progressStage = "done";
+            
+            // Build and render the tape scroll markup parameters
+            printWalmartReceipt(taxAmount, finalGrandTotal);
+
+            window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            
+            // Reset for next trip
+            customerBasket = [];
+            transactionTotal = 0;
+            progressStage = "shopping"; 
+            updateUI();
+        }
+    }
+
+    function printWalmartReceipt(tax, grandTotal) {
+        let itemsHtml = "";
+        customerBasket.forEach(item => {
+            itemsHtml += `
+                <div class="receipt-item-row">
+                    <span>${item.name}</span>
+                    <span>$${item.price.toFixed(2)}</span>
+                </div>
+            `;
+        });
+
+        const currentDateTime = new Date().toLocaleString("en-US");
+
+        receiptScroll.innerHTML = `
+            <div class="receipt-header">
+                <h3>TCT WALMART SUPERCENTER</h3>
+                <p>Store #4510 - Long Weekend Hub</p>
+                <p>${currentDateTime}</p>
+            </div>
+            <div class="receipt-items-box">
+                ${itemsHtml}
+            </div>
+            <div class="receipt-divider"></div>
+            <div class="receipt-summary-row">
+                <span>SUBTOTAL</span>
+                <span>$${transactionTotal.toFixed(2)}</span>
+            </div>
+            <div class="receipt-summary-row">
+                <span>HST TAX (13%)</span>
+                <span>$${tax.toFixed(2)}</span>
+            </div>
+            <div class="receipt-summary-row grand-total">
+                <span>GRAND TOTAL</span>
+                <span>$${grandTotal.toFixed(2)}</span>
+            </div>
+            <div class="receipt-divider"></div>
+            <div class="receipt-footer">
+                <p>ITEMS PURCHASED: ${customerBasket.length}</p>
+                <p>THANK YOU FOR SHOPPING AT TCT!</p>
+                <p>❤️ Happy Long Weekend Mom & Dad! ❤️</p>
+            </div>
+        `;
+        receiptScroll.classList.remove('hidden');
+    }
+
+    function spawnCustomerForEmployee() {
+        if (employeeQueue.length >= 4) return;
+        const targets = ["Mom 🛒", "Dad 🚙", "Shopper 📦"];
+        const guest = targets[Math.floor(Math.random() * targets.length)];
+        employeeQueue.push(guest);
+        renderEmployeeQueue();
+        
+        screenStatus.textContent = "SCAN ITEM";
+        screenStatus.style.color = "#f59e0b";
+    }
+
+    function renderEmployeeQueue() {
+        queueLane.innerHTML = "";
+        employeeQueue.forEach((customer, index) => {
+            const element = document.createElement('div');
+            element.className = 'queue-token';
+            if (index === 0) element.style.background = "#10b981";
+            element.innerHTML = `<span>👤</span> ${customer}`;
+            queueLane.appendChild(element);
+        });
+    }
+
+    function triggerRestock() {
+        if (currentRole !== 'employee') return;
+        
+        if (playerMoney < 20) {
+Use code with caution.logText.textContent = "▶️ Order failed! You need $20 in register wages to unlock new supply boxes.";return;}playerMoney -= 20;storeStock = maxStock;logText.textContent = "▶️ Backroom storage shelves reloaded. Front aisles supplied.";updateUI();}function updateCustomerView() {queueLane.innerHTML = <div class="queue-token" style="background:#6366f1">🎒 Items in Cart: <strong id="basket-count" style="margin-left:5px">0</strong></div>;}function updateUI() {cashVal.textContent = $${playerMoney.toFixed(2)};stockVal.textContent = ${storeStock}/${maxStock};if (currentRole === 'customer') {const basketCount = document.getElementById('basket-count');if (basketCount) basketCount.textContent = customerBasket.length;}}updateUI();});
+</script>
+</body>
+</html>
